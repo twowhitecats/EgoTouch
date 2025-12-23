@@ -1172,20 +1172,21 @@ class egotouch(nn.Module):
         self.touch = nn.Linear(128,1)
         self.force = nn.Linear(128,1)
         self.relu = nn.ReLU()
-        self.capcity_act = nn.Sigmoid()
+        self.capacity_act = nn.Sigmoid()
         
     def forward(self, image, data):
             
         feature = self.feature_extractor(image)
-        print(len(feature))
         feature = self.proj(feature)
         x = torch.cat((feature, data), dim = 1)
+        x = self.relu(x)
         x = self.relu(self.hidden1(x))
         x= self.relu(self.hidden2(x))
         x = self.relu(self.hidden3(x))
         
         touch = self.touch(x)
+        touch = self.capacity_act(touch)
         force = self.force(x)
         
-        return touch, force
+        return force,touch
             

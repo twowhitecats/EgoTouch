@@ -53,32 +53,31 @@ if __name__ == '__main__':
                 param.requires_grad = False
         
     
-    # for epoch in range(epochs):
-    #     running_loss = 0.0
-    #     for data in trainloader:
-    #         inputs, r_theta, values = data
+    for epoch in range(epochs):
+        running_loss = 0.0
+        for data in trainloader:
+            inputs, r_theta, values = data
 
-    #         values_force, values_touch = torch.chunk(values,2, dim = 1)
+            values_force, values_touch = torch.chunk(values,2, dim = 1)
             
-    #         optimizer.zero_grad()
-    #         output_force, output_touch = model(inputs.to(device), r_theta.to(device))  
-    #         print(output_touch.shape) 
-    #         loss = force_criterion(output_force, values_force.to(device))* 5  + touch_criterion(output_touch, values_touch.to(device))
-    #         loss.backward()
-    #         optimizer.step()
-    #         running_loss += loss.item()
+            optimizer.zero_grad()
+            output_force, output_touch = model(inputs.to(device), r_theta.to(device))   
+            loss = force_criterion(output_force, values_force.to(device))* 5  + touch_criterion(output_touch, values_touch.to(device))
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
         
-    #     l = running_loss / n
-    #     loss_.append(l)
+        l = running_loss / n
+        loss_.append(l)
         
-    #     if l < ls:
-    #         ep = epoch
-    #         torch.save({'epoch': ep,
-    #                 'loss': loss_,
-    #                 'model': model.state_dict(),
-    #                 'optimizer': optimizer.state_dict()
-    #                 }, './models/egotouch.pt')
-    # print('Finished Training')
+        if l < ls:
+            ep = epoch
+            torch.save({'epoch': ep,
+                    'loss': loss_,
+                    'model': model.state_dict(),
+                    'optimizer': optimizer.state_dict()
+                    }, './models/egotouch.pt')
+    print('Finished Training')
 
     plt.figure(figsize=(10, 8))
     plt.plot(loss_)
